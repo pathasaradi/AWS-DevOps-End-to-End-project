@@ -16,6 +16,17 @@ variable "s3_bucket_acl" {
    default = "private"
 }
 
+variable "enable_bucket_policy" {
+  description = "Enable the default S3 bucket policy and public access protections."
+  type        = bool
+  default     = true
+}
+
+variable "github_actions_role_arn" {
+  description = "IAM role ARN for GitHub Actions access to the S3 bucket."
+  type        = string
+}
+
 variable "bucket_name" {
     description = "bucket name"
     type = string 
