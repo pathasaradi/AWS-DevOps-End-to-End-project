@@ -1,0 +1,72 @@
+name: Destroy AWS Resources
+
+on:
+  workflow_dispatch:
+    inputs:
+      destroy_target:
+        description: 'Select the resource group to destroy'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - s3
+          - ec2
+          - eks
+          - alb
+
+jobs:
+  terraform-destroy:
+    name: Destroy Selected Terraform Resources
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: us-east-1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Destroy S3
+        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 's3'
+        run: |
+          cd S3/Modules/source-modules
+          terraform init
+          terraform destroy -auto-approve -var-file=../../TFVARS/s3-bucket.tfvars
+
+      - name: Destroy EC2
+        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'ec2'
+        run: |
+          cd EC2/Modules/source-modules
+          terraform init
+          terraform destroy -auto-approve -var-file=../../TFVARS/ec2-instance.tfvars
+
+      - name: Destroy EKS Cluster
+        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'eks'
+        run: |
+          cd EKS/Modules/source-modules/Cluster
+          terraform init
+          terraform destroy -auto-approve -var-file=../../../TFVARS/eks-cluster.tfvars
+
+      - name: Destroy EKS Node Group
+        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'eks'
+        run: |
+          cd EKS/Modules/source-modules/eks-node-group
+          terraform init
+          terraform destroy -auto-approve -var-file=../../../TFVARS/eks-node-group.tfvars
+
+      - name: Destroy ALB
+        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'alb'
+        run: |
+          cd ALB/Modules/source-modules
+          terraform init
+          terraform destroy -auto-approve -var-file=../../TFVARS/alb.tfvars
