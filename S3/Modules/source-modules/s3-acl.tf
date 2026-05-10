@@ -1,7 +1,10 @@
-resource "aws_s3_bucket_acl" "s3_bucket_acl" {
-    bucket = aws_s3_bucket.s3_bucket.id
-    acl = "private"
-}
+# ACL management is disabled because the bucket does not allow ACLs.
+# If you need ACL support, enable ACLs on the bucket and restore this resource.
+
+# resource "aws_s3_bucket_acl" "s3_bucket_acl" {
+#     bucket = aws_s3_bucket.s3_bucket.id
+#     acl = "private"
+# }
 
 # resource "aws_s3_bucket_ownership_controls" "bucket_ownership" {
 #     bucket = aws_s3_bucket.s3_bucket.id

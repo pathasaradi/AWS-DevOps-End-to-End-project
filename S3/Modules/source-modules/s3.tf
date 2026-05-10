@@ -1,7 +1,6 @@
 resource "aws_s3_bucket" "s3_bucket" {
     bucket = var.bucket_name
     tags = var.tags
-    acl = var.s3_bucket_acl
     versioning {
       enabled = var.versioning
     }
@@ -18,10 +17,6 @@ resource "aws_s3_bucket" "s3_bucket" {
 #     }
 #   }
 
-}
-resource "aws_s3_bucket_acl" "acl" {
-    bucket = aws_s3_bucket.s3_bucket.id
-    acl = var.s3_bucket_acl
 }
 resource "aws_s3_bucket_versioning" "versioning" {
   bucket = aws_s3_bucket.s3_bucket.id
