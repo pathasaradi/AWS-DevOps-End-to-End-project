@@ -1,0 +1,71 @@
+variable "region" {
+    description = "Region for resoruce creation in which region"
+    type = string
+    default = "us-east-1"  
+}
+
+# variable "cluster_name" {
+#   description = "Name of the EKS cluster"
+#   type        = string
+# }
+
+variable "assume_role_arn" {
+  description = "ARN of the IAM role for the EKS cluster"
+  type        = string
+}
+
+variable "cluster_name" {
+  description = "Name of the EKS cluster"
+  type        = string
+}
+
+variable "node_group_name" {
+  description = "Name of the node group"
+  type        = string
+}
+
+variable "subnet_ids" {
+  description = "List of subnet IDs for the node group"
+  type        = list(string)
+}
+
+variable "desired_size" {
+  description = "Desired number of worker nodes"
+  type        = number
+  default     = 2
+}
+
+variable "max_size" {
+  description = "Maximum number of worker nodes"
+  type        = number
+  default     = 3
+}
+
+variable "min_size" {
+  description = "Minimum number of worker nodes"
+  type        = number
+  default     = 1
+}
+
+variable "instance_types" {
+  description = "List of EC2 instance types for the node group"
+  type        = list(string)
+  default     = ["t3.medium"]
+}
+
+variable "tags" {
+  description = "Tags to apply to the node group"
+  type        = map(string)
+  default     = {}
+}
+
+variable "eks_addons" {
+  description = "Map of EKS addon names to their configuration"
+  type = map(object({
+    addon_version            = string
+    service_account_role_arn = optional(string)
+    resolve_conflicts        = optional(string, "OVERWRITE")
+    tags                     = optional(map(string), {})
+  }))
+  default = {}
+}
