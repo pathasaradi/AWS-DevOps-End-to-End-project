@@ -24,7 +24,7 @@ on:
 jobs:
   terraform:
     name: 'Terraform'
-    runs-on: self-hosted # Use self-hosted runner with Terraform and AWS CLI installed
+    runs-on: self-hosted
     env:
       AWS_REGION: us-east-1  # Update to your preferred region
 
