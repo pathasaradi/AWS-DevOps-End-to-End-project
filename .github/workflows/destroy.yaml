@@ -37,33 +37,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Destroy S3
-        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 's3'
+      - name: Destroy ALB
+        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'alb'
         run: |
-          cd S3/Modules/source-modules
+          cd ALB/Modules/source-modules
           terraform init
-          terraform destroy -auto-approve -var-file=../../TFVARS/s3-bucket.tfvars
-
-      - name: Destroy VPC
-        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'vpc'
-        run: |
-          cd Modules/VPC/Source-Modules
-          terraform init
-          terraform destroy -auto-approve -var-file=../../../TFVARS/DEV/VPC/vpc.tfvars
-
-      - name: Destroy EC2
-        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'ec2'
-        run: |
-          cd EC2/Modules/source-modules
-          terraform init
-          terraform destroy -auto-approve -var-file=../../TFVARS/ec2-instance.tfvars
-
-      - name: Destroy EKS Cluster
-        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'eks'
-        run: |
-          cd EKS/Modules/source-modules/Cluster
-          terraform init
-          terraform destroy -auto-approve -var-file=../../../TFVARS/eks-cluster.tfvars
+          terraform destroy -auto-approve -var-file=../../TFVARS/alb.tfvars
 
       - name: Destroy EKS Node Group
         if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'eks'
@@ -72,9 +51,30 @@ jobs:
           terraform init
           terraform destroy -auto-approve -var-file=../../../TFVARS/eks-node-group.tfvars
 
-      - name: Destroy ALB
-        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'alb'
+      - name: Destroy EKS Cluster
+        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'eks'
         run: |
-          cd ALB/Modules/source-modules
+          cd EKS/Modules/source-modules/Cluster
           terraform init
-          terraform destroy -auto-approve -var-file=../../TFVARS/alb.tfvars
+          terraform destroy -auto-approve -var-file=../../../TFVARS/eks-cluster.tfvars
+
+      - name: Destroy EC2
+        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'ec2'
+        run: |
+          cd EC2/Modules/source-modules
+          terraform init
+          terraform destroy -auto-approve -var-file=../../TFVARS/ec2-instance.tfvars
+
+      - name: Destroy VPC
+        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'vpc'
+        run: |
+          cd Modules/VPC/Source-Modules
+          terraform init
+          terraform destroy -auto-approve -var-file=../../../TFVARS/DEV/VPC/vpc.tfvars
+
+      - name: Destroy S3
+        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 's3'
+        run: |
+          cd S3/Modules/source-modules
+          terraform init
+          terraform destroy -auto-approve -var-file=../../TFVARS/s3-bucket.tfvars
