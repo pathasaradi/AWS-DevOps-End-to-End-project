@@ -10,6 +10,7 @@ on:
         type: choice
         options:
           - all
+          - vpc
           - s3
           - ec2
           - eks
@@ -42,6 +43,13 @@ jobs:
           cd S3/Modules/source-modules
           terraform init
           terraform destroy -auto-approve -var-file=../../TFVARS/s3-bucket.tfvars
+
+      - name: Destroy VPC
+        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'vpc'
+        run: |
+          cd Modules/VPC/Source-Modules
+          terraform init
+          terraform destroy -auto-approve -var-file=../../../TFVARS/DEV/VPC/vpc.tfvars
 
       - name: Destroy EC2
         if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'ec2'
