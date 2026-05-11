@@ -1,5 +1,4 @@
 name: CI/CD for AWS DevOps Project
-
 on:
   # push:
   #   branches:
@@ -63,8 +62,8 @@ jobs:
       if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 's3'))
       run: |
         cd S3/Modules/source-modules
-        terraform apply -auto-approve -var-file=../../TFVARS/s3-bucket.tfvars
-
+        terraform apply -auto-approve -var-file=../../TFVARS/s3-bucket.tfvars 
+    
     ##################################################################################
     # The following steps will execute terraform commands for creating AWS VPC.
     ##################################################################################
