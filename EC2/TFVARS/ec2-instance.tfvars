@@ -6,8 +6,8 @@ root_volume_size = 10
 root_volume_type = "gp2"
 
 tags = {
-  Owner        = "Raju"
+  Owner        = "Parth"
   Name         = "nginx-instance"
   Env          = "dev"
-  SupportEmail = "Raju@example.com"
+  SupportEmail = "Parth@example.com"
 }
