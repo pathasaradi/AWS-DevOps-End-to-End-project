@@ -16,6 +16,7 @@ on:
         type: choice
         options:
         - all
+        - vpc
         - s3
         - ec2
         - eks
@@ -63,6 +64,28 @@ jobs:
       run: |
         cd S3/Modules/source-modules
         terraform apply -auto-approve -var-file=../../TFVARS/s3-bucket.tfvars
+
+    ##################################################################################
+    # The following steps will execute terraform commands for creating AWS VPC.
+    ##################################################################################
+    - name: Terraform Init and Validate VPC
+      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
+      run: |
+        cd Modules/VPC/Source-Modules
+        terraform init
+        terraform validate
+
+    - name: Terraform Plan VPC
+      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
+      run: |
+        cd Modules/VPC/Source-Modules
+        terraform plan -var-file=../../../TFVARS/DEV/VPC/vpc.tfvars -no-color
+
+    - name: Terraform Apply VPC
+      if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'))
+      run: |
+        cd Modules/VPC/Source-Modules
+        terraform apply -auto-approve -var-file=../../../TFVARS/DEV/VPC/vpc.tfvars
 
     ##################################################################################
     # The following steps will execute terraform commands for crating AWS EC2 instance.
