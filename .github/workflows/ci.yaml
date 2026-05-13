@@ -67,24 +67,48 @@ jobs:
     ##################################################################################
     # The following steps will execute terraform commands for creating AWS VPC.
     ##################################################################################
-    - name: Terraform Init and Validate VPC
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
-      run: |
-        cd VPC/Source-Modules
-        terraform init
-        terraform validate
+   ##################################################################################
+# The following steps will execute terraform commands for creating AWS VPC.
+##################################################################################
 
-    - name: Terraform Plan VPC
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
-      run: |
-        cd VPC/Root-Modules
-        terraform plan -var-file=../../TFVARS/DEV/VPC/vpc.tfvars -no-color
+- name: Terraform Init and Validate VPC
+  if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
+  run: |
+    cd VPC/Root-Modules
 
-    - name: Terraform Apply VPC
-      if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'))
-      run: |
-        cd VPC/Root-Modules
-        terraform apply -auto-approve -var-file=../../TFVARS/DEV/VPC/vpc.tfvars
+    echo "Current Directory:"
+    pwd
+
+    terraform init
+    terraform validate
+
+- name: Terraform Plan VPC
+  if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
+  run: |
+    cd VPC/Root-Modules
+
+    echo "Current Directory:"
+    pwd
+
+    echo "Checking tfvars file:"
+    find ../../TFVARS -name "vpc.tfvars"
+
+    terraform init
+
+    terraform plan \
+      -var-file=../../TFVARS/DEV/VPC/vpc.tfvars \
+      -no-color
+
+- name: Terraform Apply VPC
+  if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'))
+  run: |
+    cd VPC/Root-Modules
+
+    terraform init
+
+    terraform apply \
+      -auto-approve \
+      -var-file=../../TFVARS/DEV/VPC/vpc.tfvars
 
     ##################################################################################
     # The following steps will execute terraform commands for crating AWS EC2 instance.
