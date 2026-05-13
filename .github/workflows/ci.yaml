@@ -70,26 +70,20 @@ jobs:
     - name: Terraform Init and Validate VPC
       if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
       run: |
-        echo "Workspace: ${GITHUB_WORKSPACE}"
-        ls -la "${GITHUB_WORKSPACE}"
-        cd "${GITHUB_WORKSPACE}/VPC/Root-Modules"
+        cd VPC/Root-Modules
         terraform init
         terraform validate
 
     - name: Terraform Plan VPC
       if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
       run: |
-        echo "Workspace: ${GITHUB_WORKSPACE}"
-        ls -la "${GITHUB_WORKSPACE}"/VPC/Root-Modules
-        cd "${GITHUB_WORKSPACE}/VPC/Root-Modules"
+        cd VPC/Root-Modules
         terraform plan -var-file=../../TFVARS/DEV/VPC/vpc.tfvars -no-color
 
     - name: Terraform Apply VPC
       if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'))
       run: |
-        echo "Workspace: ${GITHUB_WORKSPACE}"
-        ls -la "${GITHUB_WORKSPACE}"/VPC/Root-Modules
-        cd "${GITHUB_WORKSPACE}/VPC/Root-Modules"
+        cd VPC/Root-Modules
         terraform apply -auto-approve -var-file=../../TFVARS/DEV/VPC/vpc.tfvars
 
     ##################################################################################
