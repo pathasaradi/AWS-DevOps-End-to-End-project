@@ -1,199 +1,220 @@
 name: CI/CD for AWS DevOps Project
+
 on:
-  # push:
-  #   branches:
-  #     - '**'
   pull_request:
     branches:
       - '**'
+
   workflow_dispatch:
     inputs:
       deploy_target:
-        description: 'Select what to deploy'
+        description: "Select what to deploy"
         required: true
-        default: 'all'
+        default: "all"
         type: choice
         options:
-        - all
-        - vpc
-        - s3
-        - ec2
-        - eks
-        - alb
+          - all
+          - s3
+          - vpc
+          - ec2
+          - eks
+          - alb
 
 jobs:
   terraform:
-    name: 'Terraform'
+    name: Terraform Deployment
     runs-on: self-hosted
+
     env:
-      AWS_REGION: us-east-1  # Update to your preferred region
+      AWS_REGION: us-east-1
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      #########################################################################
+      # Checkout Repository
+      #########################################################################
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
+      #########################################################################
+      # Setup Terraform
+      #########################################################################
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v4
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+      #########################################################################
+      # Configure AWS Credentials
+      #########################################################################
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-    ##################################################################################
-    # The following steps will execute terraform commands for crating AWS S3 Bucket.
-    ##################################################################################
-    - name: Terraform Init and Validate S3
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 's3'
-      run: |
-        cd S3/Modules/source-modules
-        terraform init
-        terraform validate
+      #########################################################################
+      # S3
+      #########################################################################
+      - name: Terraform Init & Validate S3
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 's3'
+        run: |
+          cd S3/Modules/source-modules
+          terraform init
+          terraform validate
 
-    - name: Terraform Plan S3
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 's3'
-      run: |
-        cd S3/Modules/source-modules
-        terraform plan -var-file=../../TFVARS/s3-bucket.tfvars -no-color
+      - name: Terraform Plan S3
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 's3'
+        run: |
+          cd S3/Modules/source-modules
+          terraform plan \
+            -var-file=../../TFVARS/s3-bucket.tfvars \
+            -no-color
 
-    - name: Terraform Apply S3
-      if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 's3'))
-      run: |
-        cd S3/Modules/source-modules
-        terraform apply -auto-approve -var-file=../../TFVARS/s3-bucket.tfvars 
-    
-    ##################################################################################
-    # The following steps will execute terraform commands for creating AWS VPC.
-    ##################################################################################
-   ##################################################################################
-# The following steps will execute terraform commands for creating AWS VPC.
-##################################################################################
+      - name: Terraform Apply S3
+        if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 's3')
+        run: |
+          cd S3/Modules/source-modules
+          terraform apply \
+            -auto-approve \
+            -var-file=../../TFVARS/s3-bucket.tfvars
 
-- name: Terraform Init and Validate VPC
-  if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
-  run: |
-    cd VPC/Root-Modules
+      #########################################################################
+      # VPC
+      #########################################################################
+      - name: Terraform Init & Validate VPC
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
+        run: |
+          cd VPC/Source-Modules
+          terraform init
+          terraform validate
 
-    echo "Current Directory:"
-    pwd
+      - name: Terraform Plan VPC
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
+        run: |
+          cd VPC/Source-Modules
 
-    terraform init
-    terraform validate
+          echo "Current Directory:"
+          pwd
 
-- name: Terraform Plan VPC
-  if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
-  run: |
-    cd VPC/Root-Modules
+          echo "Checking tfvars file:"
+          ls ../../TFVARS/DEV/VPC/
 
-    echo "Current Directory:"
-    pwd
+          terraform init
 
-    echo "Checking tfvars file:"
-    find ../../TFVARS -name "vpc.tfvars"
+          terraform plan \
+            -var-file=../../TFVARS/DEV/VPC/vpc.tfvars \
+            -no-color
 
-    terraform init
+      - name: Terraform Apply VPC
+        if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc')
+        run: |
+          cd VPC/Source-Modules
 
-    terraform plan \
-      -var-file=../../TFVARS/DEV/VPC/vpc.tfvars \
-      -no-color
+          terraform init
 
-- name: Terraform Apply VPC
-  if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'))
-  run: |
-    cd VPC/Root-Modules
+          terraform apply \
+            -auto-approve \
+            -var-file=../../TFVARS/DEV/VPC/vpc.tfvars
 
-    terraform init
+      #########################################################################
+      # EC2
+      #########################################################################
+      - name: Terraform Init & Validate EC2
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'ec2'
+        run: |
+          cd EC2/Modules/source-modules
+          terraform init
+          terraform validate
 
-    terraform apply \
-      -auto-approve \
-      -var-file=../../TFVARS/DEV/VPC/vpc.tfvars
+      - name: Terraform Plan EC2
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'ec2'
+        run: |
+          cd EC2/Modules/source-modules
+          terraform plan \
+            -var-file=../../TFVARS/ec2-instance.tfvars \
+            -no-color
 
-    ##################################################################################
-    # The following steps will execute terraform commands for crating AWS EC2 instance.
-    ##################################################################################
-    - name: Terraform Init and Validate EC2
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'ec2'
-      run: |
-        cd EC2/Modules/source-modules
-        terraform init
-        terraform validate
+      - name: Terraform Apply EC2
+        if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'ec2')
+        run: |
+          cd EC2/Modules/source-modules
+          terraform apply \
+            -auto-approve \
+            -var-file=../../TFVARS/ec2-instance.tfvars
 
-    - name: Terraform Plan EC2
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'ec2'
-      run: |
-        cd EC2/Modules/source-modules
-        terraform plan -var-file=../../TFVARS/ec2-instance.tfvars -no-color
+      #########################################################################
+      # EKS Cluster
+      #########################################################################
+      - name: Terraform Init & Validate EKS Cluster
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks'
+        run: |
+          cd EKS/Modules/source-modules/Cluster
+          terraform init
+          terraform validate
 
-    - name: Terraform Apply EC2
-      if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'ec2'))
-      run: |
-        cd EC2/Modules/source-modules
-        terraform apply -auto-approve -var-file=../../TFVARS/ec2-instance.tfvars
+      - name: Terraform Plan EKS Cluster
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks'
+        run: |
+          cd EKS/Modules/source-modules/Cluster
+          terraform plan \
+            -var-file=../../../TFVARS/eks-cluster.tfvars \
+            -no-color
 
-    ##################################################################################
-    # The following steps will execute terraform commands for crating AWS EKS Cluster.
-    ##################################################################################
-    - name: Terraform Init and Validate EKS Cluster
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks'
-      run: |
-        cd EKS/Modules/source-modules/Cluster
-        terraform init
-        terraform validate
+      - name: Terraform Apply EKS Cluster
+        if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks')
+        run: |
+          cd EKS/Modules/source-modules/Cluster
+          terraform apply \
+            -auto-approve \
+            -var-file=../../../TFVARS/eks-cluster.tfvars
 
-    - name: Terraform Plan EKS Cluster
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks'
-      run: |
-        cd EKS/Modules/source-modules/Cluster
-        terraform plan -var-file=../../../TFVARS/eks-cluster.tfvars -no-color
+      #########################################################################
+      # EKS Node Group
+      #########################################################################
+      - name: Terraform Init & Validate EKS Node Group
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks'
+        run: |
+          cd EKS/Modules/source-modules/eks-node-group
+          terraform init
+          terraform validate
 
-    - name: Terraform Apply EKS Cluster
-      if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks'))
-      run: |
-        cd EKS/Modules/source-modules/Cluster
-        terraform apply -auto-approve -var-file=../../../TFVARS/eks-cluster.tfvars
+      - name: Terraform Plan EKS Node Group
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks'
+        run: |
+          cd EKS/Modules/source-modules/eks-node-group
+          terraform plan \
+            -var-file=../../../TFVARS/eks-node-group.tfvars \
+            -no-color
 
-    ##################################################################################
-    # The following steps will execute terraform commands for crating AWS EKS Node Group.
-    ##################################################################################
-    - name: Terraform Init and Validate EKS Node Group
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks'
-      run: |
-        cd EKS/Modules/source-modules/eks-node-group
-        terraform init
-        terraform validate
+      - name: Terraform Apply EKS Node Group
+        if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks')
+        run: |
+          cd EKS/Modules/source-modules/eks-node-group
+          terraform apply \
+            -auto-approve \
+            -var-file=../../../TFVARS/eks-node-group.tfvars
 
-    - name: Terraform Plan EKS Node Group
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks'
-      run: |
-        cd EKS/Modules/source-modules/eks-node-group
-        terraform plan -var-file=../../../TFVARS/eks-node-group.tfvars -no-color
+      #########################################################################
+      # ALB
+      #########################################################################
+      - name: Terraform Init & Validate ALB
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'alb'
+        run: |
+          cd ALB/Modules/source-modules
+          terraform init
+          terraform validate
 
-    - name: Terraform Apply EKS Node Group
-      if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks'))
-      run: |
-        cd EKS/Modules/source-modules/eks-node-group
-        terraform apply -auto-approve -var-file=../../../TFVARS/eks-node-group.tfvars
+      - name: Terraform Plan ALB
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'alb'
+        run: |
+          cd ALB/Modules/source-modules
+          terraform plan \
+            -var-file=../../TFVARS/alb.tfvars \
+            -no-color
 
-    ##################################################################################
-    # The following steps will execute terraform commands for crating AWS Application Load Balancer.
-    ##################################################################################
-    - name: Terraform Init and Validate ALB
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'alb'
-      run: |
-        cd ALB/Modules/source-modules
-        terraform init
-        terraform validate
-
-    - name: Terraform Plan ALB
-      if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'alb'
-      run: |
-        cd ALB/Modules/source-modules
-        terraform plan -var-file=../../TFVARS/alb.tfvars -no-color
-
-    - name: Terraform Apply ALB
-      if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'alb'))
-      run: |
-        cd ALB/Modules/source-modules
-        terraform apply -auto-approve -var-file=../../TFVARS/alb.tfvars
+      - name: Terraform Apply ALB
+        if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'alb')
+        run: |
+          cd ALB/Modules/source-modules
+          terraform apply \
+            -auto-approve \
+            -var-file=../../TFVARS/alb.tfvars
