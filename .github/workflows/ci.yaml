@@ -1,30 +1,30 @@
 name: CI/CD for AWS DevOps Project
+
 on:
-  # push:
-  #   branches:
-  #     - '**'
   pull_request:
     branches:
       - '**'
+
   workflow_dispatch:
     inputs:
       deploy_target:
-        description: 'Select what to deploy'
+        description: "Select what to deploy"
         required: true
-        default: 'all'
+        default: "all"
         type: choice
         options:
-        - all
-        - vpc
-        - s3
-        - ec2
-        - eks
-        - alb
+          - all
+          - s3
+          - vpc
+          - ec2
+          - eks
+          - alb
 
 jobs:
   terraform:
-    name: 'Terraform'
+    name: Terraform Deployment
     runs-on: self-hosted
+
     env:
       AWS_REGION: us-east-1  # Update to your preferred region
 
