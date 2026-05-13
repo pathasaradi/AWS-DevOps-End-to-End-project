@@ -77,7 +77,7 @@ jobs:
     - name: Terraform Plan VPC
       if: github.event_name != 'workflow_dispatch' || github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
       run: |
-        cd Modules/VPC/Source-Modules
+        cd VPC/Source-Modules
         terraform plan -var-file=../../../TFVARS/DEV/VPC/vpc.tfvars -no-color
 
     - name: Terraform Apply VPC
