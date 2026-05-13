@@ -77,15 +77,11 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_eip" "nat" {
-  vpc = true
+  domain = "vpc"
 
-  tags = merge(
-    {
-      Name        = "${var.environment}-nat-eip"
-      Environment = var.environment
-    },
-    var.tags
-  )
+  tags = {
+    Name = "nat-eip"
+  }
 }
 
 resource "aws_nat_gateway" "this" {
