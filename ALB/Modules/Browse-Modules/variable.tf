@@ -8,32 +8,32 @@ variable "assume_role_arn" {
     type = string
 }
 
-# variable "alb_name" {
-#   description = "The name of the ALB"
-#   type        = string
-# }
+variable "alb_name" {
+  description = "The name of the ALB"
+  type        = string
+}
 
-# variable "alb_internal" {
-#   description = "Whether the ALB is internal"
-#   type        = bool
-#   default     = false
-# }
+variable "alb_internal" {
+  description = "Whether the ALB is internal"
+  type        = bool
+  default     = false
+}
 
-# variable "alb_security_groups" {
-#   description = "List of security group IDs"
-#   type        = list(string)
-# }
+variable "alb_security_groups" {
+  description = "List of security group IDs"
+  type        = list(string)
+}
 
-# variable "alb_subnets" {
-#   description = "List of subnet IDs"
-#   type        = list(string)
-# }
+variable "alb_subnets" {
+  description = "List of subnet IDs"
+  type        = list(string)
+}
 
-# variable "tags" {
-#   description = "Tags to apply to resources"
-#   type        = map(string)
-#   default     = {}
-# }
+variable "tags" {
+  description = "Tags to apply to resources"
+  type        = map(string)
+  default     = {}
+}
 
 variable "target_group_name" {
   description = "Name for the target group"

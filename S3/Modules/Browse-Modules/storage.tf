@@ -7,9 +7,11 @@ provider "aws" {
 
 terraform {
     backend "s3" {
-        bucket = "raju-bucket-001"
-        key = "S3/s3.tfstate"
-        region = "us-east-1"
+        bucket         = "devops-aws-demo-bucket-002"
+        key            = "s3-bucket.tfstate"
+        region         = "us-east-1"
+        dynamodb_table = "terraform-locks"
+        encrypt        = true
     }
 }
 

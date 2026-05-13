@@ -1,6 +1,5 @@
 variable "region" {
-    description = "Region for resoruce creation in which region"
-    type = string
+    description = "Region for resource creation in which region"
     default = "us-east-1"  
 }
 
@@ -31,8 +30,8 @@ variable "root_volume_type" {
   default     = "gp2"
 }
 
-# variable "tags" {
-#   description = "Tags to apply to the EC2 instance"
-#   type        = map(string)
-#   default     = {}
-# }
+variable "tags" {
+  description = "Tags to apply to the EC2 instance"
+  type        = map(string)
+  default     = {}
+}

@@ -25,7 +25,7 @@ variable "s3_bucket_acl" {
 #     type = string
 # }
 variable "versioning" {
-    type = string
+    type = bool
     # validation {
     #   condition = var.versioning == true
     #   error_message = "Objet versioning required to be true"

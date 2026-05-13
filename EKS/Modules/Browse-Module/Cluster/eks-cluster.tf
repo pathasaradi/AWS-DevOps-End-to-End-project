@@ -5,13 +5,15 @@ provider "aws" {
     }
 }
 
-# terraform {
-#     backend "s3" {
-#         bucket = "raju-bucket-001"
-#         key = "S3/s3.tfstate"
-#         region = "us-east-1"
-#     }
-# }
+terraform {
+    backend "s3" {
+        bucket         = "devops-aws-demo-bucket-002"
+        key            = "eks-cluster.tfstate"
+        region         = "us-east-1"
+        dynamodb_table = "terraform-locks"
+        encrypt        = true
+    }
+}
 
 module "eks" {
   source            = "../../source-modules/Cluster"

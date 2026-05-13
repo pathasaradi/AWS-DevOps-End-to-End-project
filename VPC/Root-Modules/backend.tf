@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
-    bucket         = "terraform.tf.backend"
+    bucket         = "devops-aws-demo-bucket-002"
     key            = "vpc-root/terraform.tfstate"
-    region         = "ap-south-1"   # 👈 must match bucket region
-    #dynamodb_table = "terraform-locks"
-    #encrypt        = true
+    region         = "us-east-1"   # 👈 must match bucket region
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
   }
 }

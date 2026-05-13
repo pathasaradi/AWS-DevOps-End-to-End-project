@@ -5,6 +5,16 @@ provider "aws" {
     }
 }
 
+terraform {
+    backend "s3" {
+        bucket         = "devops-aws-demo-bucket-002"
+        key            = "alb.tfstate"
+        region         = "us-east-1"
+        dynamodb_table = "terraform-locks"
+        encrypt        = true
+    }
+}
+
 module "alb" {
   source              = "../source-modules"
   name                = var.name

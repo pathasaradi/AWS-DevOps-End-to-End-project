@@ -1,9 +1,6 @@
 resource "aws_s3_bucket" "s3_bucket" {
     bucket = var.bucket_name
     tags = var.tags
-    versioning {
-      enabled = var.versioning
-    }
 #   logging {
 #     target_bucket = var.target_bucket
 #     target_prefix = "log/"
