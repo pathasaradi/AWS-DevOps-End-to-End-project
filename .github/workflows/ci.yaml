@@ -80,10 +80,15 @@ jobs:
       #########################################################################
       # VPC
       #########################################################################
+      #######################################################################
+      # VPC
+      #######################################################################
+
       - name: Terraform Init & Validate VPC
         if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
         run: |
           cd VPC/Source-Modules
+
           terraform init
           terraform validate
 
@@ -95,13 +100,13 @@ jobs:
           echo "Current Directory:"
           pwd
 
-          echo "Checking tfvars file:"
-          ls ../../TFVARS/DEV/VPC/
+          echo "Checking TFVARS:"
+          find ../../TFVARS -type f
 
           terraform init
 
           terraform plan \
-            -var-file=../../TFVARS/DEV/VPC/vpc.tfvars \
+            -var-file="$(pwd)/../../TFVARS/DEV/VPC/vpc.tfvars" \
             -no-color
 
       - name: Terraform Apply VPC
@@ -113,7 +118,7 @@ jobs:
 
           terraform apply \
             -auto-approve \
-            -var-file=../../TFVARS/DEV/VPC/vpc.tfvars
+            -var-file="$(pwd)/../../TFVARS/DEV/VPC/vpc.tfvars"
 
       #########################################################################
       # EC2
