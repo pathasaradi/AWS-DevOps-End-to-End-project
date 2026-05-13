@@ -22,11 +22,10 @@ variable "subnet_ids" {
 variable "cluster_version" {
   description = "Version of the EKS cluster"
   type        = string
-} 
+}
 
-
-# variable "tags" {
-#   description = "Tags to apply to the EKS cluster"
-#   type        = map(string)
-#   default     = {}
-# }
+variable "tags" {
+  description = "Tags to apply to the EKS cluster"
+  type        = map(string)
+  default     = {}
+}
