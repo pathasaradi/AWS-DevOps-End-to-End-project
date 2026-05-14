@@ -1,32 +1,31 @@
 variable "aws_region" {
-  type        = string
-  description = "AWS region"
+  type = string
 }
 
 variable "vpc_cidr" {
-  type        = string
+  type = string
 }
 
-variable "public_subnet_cidr" {
-  type        = string
+variable "public_subnet_cidrs" {
+  type = list(string)
 }
 
-variable "private_subnet_cidr" {
-  type        = string
+variable "private_subnet_cidrs" {
+  type = list(string)
 }
 
-variable "public_az" {
-  type        = string
+variable "public_azs" {
+  type = list(string)
 }
 
-variable "private_az" {
-  type        = string
+variable "private_azs" {
+  type = list(string)
 }
 
 variable "environment" {
-  type        = string
+  type = string
 }
 
 variable "tags" {
-  type        = map(string)
+  type = map(string)
 }
