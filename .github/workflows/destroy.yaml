@@ -19,7 +19,7 @@ on:
 jobs:
   terraform-destroy:
     name: Destroy Selected Terraform Resources
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     env:
       AWS_REGION: us-east-1
 
