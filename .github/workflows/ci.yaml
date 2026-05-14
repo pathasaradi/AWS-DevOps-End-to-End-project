@@ -10,7 +10,6 @@ on:
     inputs:
       deploy_target:
         description: "Select what to deploy"
-        description: "Select what to deploy"
         required: true
         default: "all"
         type: choice
@@ -39,15 +38,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      #########################################################################
-      # Setup Terraform
-      #########################################################################
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      #########################################################################
-      # Configure AWS Credentials
-      #########################################################################
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -58,6 +53,7 @@ jobs:
       #########################################################################
       # S3
       #########################################################################
+
       - name: Terraform Init & Validate S3
         if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 's3'
         run: |
@@ -84,9 +80,6 @@ jobs:
       #########################################################################
       # VPC
       #########################################################################
-      #######################################################################
-      # VPC
-      #######################################################################
 
       - name: Terraform Init & Validate VPC
         if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
@@ -127,6 +120,7 @@ jobs:
       #########################################################################
       # EC2
       #########################################################################
+
       - name: Terraform Init & Validate EC2
         if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'ec2'
         run: |
@@ -153,6 +147,7 @@ jobs:
       #########################################################################
       # EKS Cluster
       #########################################################################
+
       - name: Terraform Init & Validate EKS Cluster
         if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks'
         run: |
@@ -179,6 +174,7 @@ jobs:
       #########################################################################
       # EKS Node Group
       #########################################################################
+
       - name: Terraform Init & Validate EKS Node Group
         if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'eks'
         run: |
@@ -205,6 +201,7 @@ jobs:
       #########################################################################
       # ALB
       #########################################################################
+
       - name: Terraform Init & Validate ALB
         if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'alb'
         run: |
