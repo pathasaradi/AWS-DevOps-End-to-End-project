@@ -3,13 +3,17 @@ provider "aws" {
 }
 
 module "vpc" {
-  source              = "../Source-Modules/"
-  aws_region          = var.aws_region
-  vpc_cidr            = var.vpc_cidr
-  public_subnet_cidr  = var.public_subnet_cidr
-  private_subnet_cidr = var.private_subnet_cidr
-  public_az           = var.public_az
-  private_az          = var.private_az
-  environment         = var.environment
-  tags                = var.tags
+  source = "../Source-Modules/"
+
+  aws_region = var.aws_region
+  vpc_cidr   = var.vpc_cidr
+
+  public_subnet_cidrs  = var.public_subnet_cidrs
+  private_subnet_cidrs = var.private_subnet_cidrs
+
+  public_azs  = var.public_azs
+  private_azs = var.private_azs
+
+  environment = var.environment
+  tags        = var.tags
 }
