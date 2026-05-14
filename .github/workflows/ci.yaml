@@ -5,14 +5,23 @@ on:
     branches:
       - '**'
 
+
   workflow_dispatch:
     inputs:
       deploy_target:
         description: "Select what to deploy"
+        description: "Select what to deploy"
         required: true
+        default: "all"
         default: "all"
         type: choice
         options:
+          - all
+          - s3
+          - vpc
+          - ec2
+          - eks
+          - alb
           - all
           - s3
           - vpc
@@ -23,7 +32,9 @@ on:
 jobs:
   terraform:
     name: Terraform Deployment
+    name: Terraform Deployment
     runs-on: self-hosted
+
 
     env:
       AWS_REGION: us-east-1               
