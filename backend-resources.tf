@@ -13,7 +13,7 @@ resource "aws_dynamodb_table" "terraform_locks" {
   }
 
   # Prevent accidental deletion of this DynamoDB table
-  lifecycle {
-    prevent_destroy = true
-  }
-}
+#   lifecycle {
+#     prevent_destroy = true
+#   }
+# }
