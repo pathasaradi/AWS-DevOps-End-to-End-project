@@ -1,5 +1,5 @@
 aws_region         = "us-west-2"
-bucket_name        = "dev-app-java-bucket-001-unique"
+bucket_name        = "devops-aws-demo-bucket-002"
 environment        = "dev"
 versioning_enabled = true
 sse_algorithm      = "AES256"
@@ -19,7 +19,7 @@ bucket_policy_json = <<EOT
       "Effect": "Deny",
       "Principal": "*",
       "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::dev-app-java-bucket-001-unique/*",
+      "Resource": "arn:aws:s3:::devops-aws-demo-bucket-002/*",
       "Condition": {
         "StringNotEquals": {
           "s3:x-amz-server-side-encryption": "AES256"
