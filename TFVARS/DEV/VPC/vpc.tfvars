@@ -1,4 +1,4 @@
-aws_region = "us-east-1"
+aws_region = "ap-south-1"
 
 vpc_cidr = "10.0.0.0/16"
 
@@ -15,15 +15,15 @@ private_subnet_cidrs = [
 ]
 
 public_azs = [
-  "us-east-1a",
-  "us-east-1b",
-  "us-east-1c"
+  "ap-south-1a",
+  "ap-south-1b",
+  "ap-south-1c"
 ]
 
 private_azs = [
-  "us-east-1a",
-  "us-east-1b",
-  "us-east-1c"
+  "ap-south-1a",
+  "ap-south-1b",
+  "ap-south-1c"
 ]
 
 environment = "dev"
