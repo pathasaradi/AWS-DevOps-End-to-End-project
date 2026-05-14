@@ -26,7 +26,7 @@ private_azs = [
   "us-east-1c"
 ]
 
-environment = "dev"
+environment = "Production"
 
 tags = {
   Project = "VPC"
