@@ -1,4 +1,4 @@
-name: CI/CD for AWS DevOps Project
+name: AWS-DevOps-End-to-End-project
 
 on:
   pull_request:
@@ -26,7 +26,7 @@ jobs:
     runs-on: self-hosted
 
     env:
-      AWS_REGION: us-east-1
+      AWS_REGION: us-east-1               
 
     steps:
       #########################################################################
