@@ -1,7 +1,7 @@
 variable "region" {
     description = "Region"
     type = string
-    default = "ap-south-1" 
+    default = "us-east-1" 
 }
 
 variable "assume_role_arn" {
