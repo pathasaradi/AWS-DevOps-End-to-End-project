@@ -13,7 +13,6 @@ on:
         description: "Select what to deploy"
         required: true
         default: "all"
-        default: "all"
         type: choice
         options:
           - all
@@ -22,16 +21,10 @@ on:
           - ec2
           - eks
           - alb
-          - all
-          - s3
-          - vpc
-          - ec2
-          - eks
-          - alb
+
 
 jobs:
   terraform:
-    name: Terraform Deployment
     name: Terraform Deployment
     runs-on: self-hosted
 
