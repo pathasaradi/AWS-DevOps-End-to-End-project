@@ -1,4 +1,3 @@
-cat > ../source-modules/variable.tf << 'EOF'
 variable "region" {
   description = "Region for resource creation"
   type        = string
@@ -54,4 +53,3 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-EOF
