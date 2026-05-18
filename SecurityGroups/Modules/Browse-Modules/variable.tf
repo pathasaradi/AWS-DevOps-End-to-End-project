@@ -46,9 +46,3 @@ variable "egress_rules" {
   }))
   default = []
 }
-
-variable "tags" {
-  description = "Tags to apply to the security group"
-  type        = map(string)
-  default     = {}
-}
