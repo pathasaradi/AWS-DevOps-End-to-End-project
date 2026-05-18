@@ -18,7 +18,7 @@ on:
           - s3
           - vpc
           - ec2
-          - eks
+          - eks  
           - alb
 
 
@@ -224,3 +224,90 @@ jobs:
           terraform apply \
             -auto-approve \
             -var-file=../../TFVARS/alb.tfvars
+
+      #########################################################################
+      # SECURITY GROUP
+      #########################################################################
+
+      - name: Terraform Init & Validate Security Group
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'securitygroup'
+        run: |
+          cd SecurityGroup/Modules/source-modules
+          terraform init
+          terraform validate
+
+      - name: Terraform Plan Security Group
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'securitygroup'
+        run: |
+          cd SecurityGroup/Modules/source-modules
+
+          terraform plan \
+            -var-file=../../TFVARS/securitygroup.tfvars \
+            -no-color
+
+      - name: Terraform Apply Security Group
+        if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'securitygroup')
+        run: |
+          cd SecurityGroup/Modules/source-modules
+
+          terraform apply \
+            -auto-approve \
+            -var-file=../../TFVARS/securitygroup.tfvars
+
+      #########################################################################
+      # LAUNCH TEMPLATE
+      #########################################################################
+
+      - name: Terraform Init & Validate Launch Template
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'launchtemplate'
+        run: |
+          cd LaunchTemplate/Modules/source-modules
+          terraform init
+          terraform validate
+
+      - name: Terraform Plan Launch Template
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'launchtemplate'
+        run: |
+          cd LaunchTemplate/Modules/source-modules
+
+          terraform plan \
+            -var-file=../../TFVARS/launchtemplate.tfvars \
+            -no-color
+
+      - name: Terraform Apply Launch Template
+        if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'launchtemplate')
+        run: |
+          cd LaunchTemplate/Modules/source-modules
+
+          terraform apply \
+            -auto-approve \
+            -var-file=../../TFVARS/launchtemplate.tfvars
+
+      #########################################################################
+      # AUTO SCALING GROUP
+      #########################################################################
+
+      - name: Terraform Init & Validate Auto Scaling
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'autoscaling'
+        run: |
+          cd AutoScaling/Modules/source-modules
+          terraform init
+          terraform validate
+
+      - name: Terraform Plan Auto Scaling
+        if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'autoscaling'
+        run: |
+          cd AutoScaling/Modules/source-modules
+
+          terraform plan \
+            -var-file=../../TFVARS/autoscaling.tfvars \
+            -no-color
+
+      - name: Terraform Apply Auto Scaling
+        if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'autoscaling')
+        run: |
+          cd AutoScaling/Modules/source-modules
+
+          terraform apply \
+            -auto-approve \
+            -var-file=../../TFVARS/autoscaling.tfvars
