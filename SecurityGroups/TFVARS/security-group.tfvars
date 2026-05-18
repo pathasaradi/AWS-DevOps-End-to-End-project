@@ -2,7 +2,7 @@ assume_role_arn      = "arn:aws:iam::934860271541:role/Admin-Role"
 region               = "us-east-1"
 security_group_name  = "my-security-group"
 description          = "Security group for web servers"
-vpc_id               = "vpc-xxxxxxxxxxxxxxxxx"  # Replace with actual VPC ID
+vpc_id               = "vpc-01d1adaf60b32c9c0"  # Replace with actual VPC ID
 
 ingress_rules = [
   {
