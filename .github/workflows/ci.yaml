@@ -235,14 +235,14 @@ jobs:
       - name: Terraform Init & Validate Security Group
         if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'securitygroup'
         run: |
-          cd SecurityGroup/Modules/Browse-Modules
+          cd SecurityGroups/Modules/Browse-Modules
           terraform init
           terraform validate
 
       - name: Terraform Plan Security Group
         if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'securitygroup'
         run: |
-          cd SecurityGroup/Modules/Browse-Modules
+          cd SecurityGroups/Modules/Browse-Modules
 
           terraform plan \
             -var-file=../../TFVARS/securitygroup.tfvars \
@@ -251,7 +251,7 @@ jobs:
       - name: Terraform Apply Security Group
         if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'securitygroup')
         run: |
-          cd SecurityGroup/Modules/Browse-Modules 
+          cd SecurityGroups/Modules/Browse-Modules
 
           terraform apply \
             -auto-approve \
