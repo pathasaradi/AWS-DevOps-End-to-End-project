@@ -1,3 +1,4 @@
+cat > ../source-modules/variable.tf << 'EOF'
 variable "region" {
   description = "Region for resource creation"
   type        = string
@@ -5,7 +6,8 @@ variable "region" {
 }
 
 variable "assume_role_arn" {
-  type = string
+  description = "IAM Role ARN to assume for resource creation"
+  type        = string
 }
 
 variable "security_group_name" {
@@ -46,3 +48,10 @@ variable "egress_rules" {
   }))
   default = []
 }
+
+variable "tags" {
+  description = "Tags to apply to resources"
+  type        = map(string)
+  default     = {}
+}
+EOF
