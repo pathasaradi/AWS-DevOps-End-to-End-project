@@ -1,5 +1,5 @@
 variable "tags" {
-  description = "A map of tags to assign to the security group."
+  description = "Tags to apply to resources"
   type        = map(string)
   default     = {}
   
