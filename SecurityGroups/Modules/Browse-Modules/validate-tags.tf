@@ -1,6 +1,8 @@
 variable "tags" {
-  type = map(string)
-
+  description = "A map of tags to assign to the security group."
+  type        = map(string)
+  default     = {}
+  
   validation {
     condition     = length(var.tags["Owner"]) > 0
     error_message = "Owner tag is required !!"
