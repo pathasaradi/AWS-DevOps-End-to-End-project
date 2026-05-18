@@ -2,7 +2,7 @@ assume_role_arn      = "arn:aws:iam::338034595180:role/GitHub-Actions-Role"
 region               = "us-east-1"
 security_group_name  = "my-security-group"
 description          = "Security group for web servers"
-vpc_id               = "vpc-01d1adaf60b32c9c0"  # Replace with actual VPC ID
+vpc_id               = "vpc-01d1adaf60b32c9c0"
 
 ingress_rules = [
   {
