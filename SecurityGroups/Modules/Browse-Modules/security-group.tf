@@ -10,7 +10,7 @@ terraform {
         bucket         = "devops-aws-demo-bucket-002"
         key            = "security-group.tfstate"
         region         = "us-east-1"
-        use_lockfile = false  
+        dynamodb_table = "terraform-locks"
         encrypt        = true
     }
 }
