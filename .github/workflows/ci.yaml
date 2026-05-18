@@ -87,7 +87,7 @@ jobs:
       - name: Terraform Init & Validate VPC
         if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
         run: |
-          cd VPC/Source-Modules
+          cd VPC/Root-Modules
 
           terraform init
           terraform validate
@@ -95,7 +95,7 @@ jobs:
       - name: Terraform Plan VPC
         if: github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc'
         run: |
-          cd VPC/Source-Modules
+          cd VPC/Root-Modules
 
           echo "Current Directory:"
           pwd
@@ -112,7 +112,7 @@ jobs:
       - name: Terraform Apply VPC
         if: github.event_name == 'workflow_dispatch' && (github.event.inputs.deploy_target == 'all' || github.event.inputs.deploy_target == 'vpc')
         run: |
-          cd VPC/Source-Modules
+          cd VPC/Root-Modules
 
           terraform init
 

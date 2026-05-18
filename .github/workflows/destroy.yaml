@@ -68,7 +68,7 @@ jobs:
       - name: Destroy VPC
         if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'vpc'
         run: |
-         cd VPC/Source-Modules
+         cd VPC/Root-Modules
          terraform init -reconfigure
          terraform destroy -auto-approve -var-file=../../TFVARS/DEV/VPC/vpc.tfvars
 
