@@ -20,6 +20,9 @@ on:
           - ec2
           - eks  
           - alb
+          - securitygroup
+          - launchtemplate
+          - autoscaling
 
 
 jobs:
