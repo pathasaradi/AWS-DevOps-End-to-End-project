@@ -245,7 +245,7 @@ jobs:
           cd SecurityGroups/Modules/Browse-Modules
 
           terraform plan \
-            -var-file=../../TFVARS/securitygroup.tfvars \
+            -var-file=../../TFVARS/security-group.tfvars \
             -no-color
 
       - name: Terraform Apply Security Group
@@ -255,7 +255,7 @@ jobs:
 
           terraform apply \
             -auto-approve \
-            -var-file=../../TFVARS/securitygroup.tfvars
+            -var-file=../../TFVARS/security-group.tfvars
 
       #########################################################################
       # LAUNCH TEMPLATE
