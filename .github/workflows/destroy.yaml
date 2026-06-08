@@ -15,6 +15,7 @@ on:
           - ec2
           - eks
           - alb
+          - securitygroups
 
 jobs:
   terraform-destroy:
@@ -78,3 +79,10 @@ jobs:
           cd S3/Modules/source-modules
           terraform init
           terraform destroy -auto-approve -var-file=../../TFVARS/s3-bucket.tfvars
+
+      - name: Destroy securitygroups
+        if: github.event.inputs.destroy_target == 'all' || github.event.inputs.destroy_target == 'securitygroups'
+        run: |
+         cd SecurityGroups/Modules/Browse-Modules
+         terraform init -reconfigure
+         terraform destroy -auto-approve -var-file=../../TFVARS/security-group.tfvars
